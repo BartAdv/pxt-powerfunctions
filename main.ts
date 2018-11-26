@@ -116,7 +116,7 @@ namespace powerfunctions {
     //% weight=100
     //% motor.fieldEditor="gridpicker" motor.fieldOptions.columns=4 motor.fieldOptions.tooltips="false"
     //% speed.min=1 speed.max=7
-    function moveForward(motor: PowerFunctionsMotor, speed: number) {
+    export function moveForward(motor: PowerFunctionsMotor, speed: number) {
         speed = Math.max(-7, Math.min(7, speed))
         sendSinglePwm(motor, speed);
     }
@@ -129,7 +129,7 @@ namespace powerfunctions {
     //% weight=90
     //% motor.fieldEditor="gridpicker" motor.fieldOptions.columns=4 motor.fieldOptions.tooltips="false"
     //% speed.min=1 speed.max=7
-    function moveBackward(motor: PowerFunctionsMotor, speed: number): void {
+    export function moveBackward(motor: PowerFunctionsMotor, speed: number): void {
         speed = Math.max(-7, Math.min(7, speed))
         sendSinglePwm(motor, 0xf + 1 - speed);
     }
