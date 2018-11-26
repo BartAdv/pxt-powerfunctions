@@ -134,7 +134,7 @@ namespace powerfunctions {
     //% motor.fieldEditor="gridpicker" motor.fieldOptions.columns=4 motor.fieldOptions.tooltips="false"
     //% speed.min=1 speed.max=7
     export function moveForward(motor: PowerFunctionsMotor, speed: number) {
-        speed = Math.max(-7, Math.min(7, speed))
+        speed = Math.clamp(1, 7, speed)
         sendSinglePwm(motor, PWM_FLT + speed)
     }
 
@@ -147,7 +147,7 @@ namespace powerfunctions {
     //% motor.fieldEditor="gridpicker" motor.fieldOptions.columns=4 motor.fieldOptions.tooltips="false"
     //% speed.min=1 speed.max=7
     export function moveBackward(motor: PowerFunctionsMotor, speed: number): void {
-        speed = Math.max(-7, Math.min(7, speed))
+        speed = Math.clamp(1, 7, speed)
         sendSinglePwm(motor, PWM_REV1 + 1 - speed);
     }
 
@@ -181,8 +181,8 @@ namespace transport {
     const CYCLE = 1000000 / 38000
     const HALF_PERIOD = CYCLE / 2
     const START_STOP_PAUSE = 39 * CYCLE
-    const LOW_PAUSE = 10 * 1000000 / 38000
-    const HIGH_PAUSE = 21 * 1000000 / 38000
+    const LOW_PAUSE = 10 * CYCLE
+    const HIGH_PAUSE = 21 * CYCLE
 
     function sendBit(): void {
         for (let i = 0; i < 6; i++) {
