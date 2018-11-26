@@ -72,6 +72,23 @@ namespace powerfunctions {
     const SINGLE_EXT = 0x6
     const ESCAPE = 0x4
 
+    const PWM_FLT = 0x0
+    const PWM_FWD1 = 0x1
+    const PWM_FWD2 = 0x2
+    const PWM_FWD3 = 0x3
+    const PWM_FWD4 = 0x4
+    const PWM_FWD5 = 0x5
+    const PWM_FWD6 = 0x6
+    const PWM_FWD7 = 0x7
+    const PWM_BRK = 0x8
+    const PWM_REV7 = 0x9
+    const PWM_REV6 = 0xA
+    const PWM_REV5 = 0xB
+    const PWM_REV4 = 0xC
+    const PWM_REV3 = 0xD
+    const PWM_REV2 = 0xE
+    const PWM_REV1 = 0xf
+
     function getOutput(motor: PowerFunctionsMotor): PowerFunctionsOutput {
         switch (motor) {
             case PowerFunctionsMotor.Red1:
@@ -118,7 +135,7 @@ namespace powerfunctions {
     //% speed.min=1 speed.max=7
     export function moveForward(motor: PowerFunctionsMotor, speed: number) {
         speed = Math.max(-7, Math.min(7, speed))
-        sendSinglePwm(motor, speed);
+        sendSinglePwm(motor, PWM_FLT + speed)
     }
 
     /**
@@ -131,7 +148,31 @@ namespace powerfunctions {
     //% speed.min=1 speed.max=7
     export function moveBackward(motor: PowerFunctionsMotor, speed: number): void {
         speed = Math.max(-7, Math.min(7, speed))
-        sendSinglePwm(motor, 0xf + 1 - speed);
+        sendSinglePwm(motor, PWM_REV1 + 1 - speed);
+    }
+
+    /**
+    * Brake then float.
+    * The motor's power is quickly reversed and thus the motor will stop abruptly.
+    */
+    //% blockId=powerfunctions_brake
+    //% block="brake| motor %motor"
+    //% weight=80
+    //% motor.fieldEditor="gridpicker" motor.fieldOptions.columns=4 motor.fieldOptions.tooltips="false"
+    export function brake(motor: PowerFunctionsMotor) {
+        sendSinglePwm(motor, PWM_BRK)
+    }
+
+    /**
+     * Float a motor to stop.
+     * The motor's power is switched off and thus the motor will roll to a stop.
+     */
+    //% blockId=pf_leeway
+    //% block="float | motor %motor | to stop"
+    //% weight=70
+    //% motor.fieldEditor="gridpicker" motor.fieldOptions.columns=4 motor.fieldOptions.tooltips="false"
+    export function float(motor: PowerFunctionsMotor) {
+        sendSinglePwm(motor, PWM_FLT)
     }
 }
 
