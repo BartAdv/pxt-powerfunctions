@@ -55,9 +55,9 @@ void PowerFunctions::pause(uint8_t channel, uint8_t count)
   } else if(count < 3) { // 1, 2
     pause = 5;
   } else {  // 3, 4, 5
-    pause = 5 + (channel + 1) * 2;
+    pause = 6 + 2 * channel;
   }
-  sleep_us(pause * 77); //MAX_MESSAGE_LENGTH
+  sleep_us(pause * 16000); //MAX_MESSAGE_LENGTH
 }
 
 // Send the start/stop bit
@@ -82,7 +82,7 @@ void PowerFunctions::send(uint8_t channel, uint8_t nib1, uint8_t nib2, uint8_t n
   uint8_t i, j;
 
   uint16_t message = nib1 << 12 | nib2 << 8 | nib3 << 4 | (0xf ^ nib1 ^ nib2 ^ nib3);
-  for(i = 0; i < 6; i++)
+  for(i = 0; i < 5; i++)
   {
     pause(channel, i);
     start_stop_bit();
@@ -91,7 +91,8 @@ void PowerFunctions::send(uint8_t channel, uint8_t nib1, uint8_t nib2, uint8_t n
       sleep_us((0x8000 & (message << j)) != 0 ? HIGH_PAUSE : LOW_PAUSE);
     }
     start_stop_bit();
-  } // for
+  }
+  pause(channel, 5);
 }
 
 inline void PowerFunctions::toggle(){
