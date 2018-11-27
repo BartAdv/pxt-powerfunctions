@@ -183,8 +183,9 @@ namespace transport {
     const START_STOP_PAUSE = 39 * CYCLE
     const LOW_PAUSE = 10 * CYCLE
     const HIGH_PAUSE = 21 * CYCLE
+    const MAX_LENGTH_US = 16 * 1000
 
-    function sendBit(): void {
+    function sendMark(): void {
         for (let i = 0; i < 6; i++) {
             irLed.digitalWrite(true)
             control.waitMicros(HALF_PERIOD)
@@ -194,7 +195,7 @@ namespace transport {
     }
 
     function sendStartStopBit(): void {
-        sendBit()
+        sendMark()
         control.waitMicros(START_STOP_PAUSE)
     }
 
@@ -206,23 +207,24 @@ namespace transport {
         } else if (count < 3) { // 1, 2
             pause = 5;
         } else {  // 3, 4, 5
-            pause = 5 + (channel + 1) * 2
+            pause = 6 + 2 * channel
         }
-        control.waitMicros(pause * 77)
+        control.waitMicros(pause * MAX_LENGTH_US)
     }
 
     export function send(channel: PowerFunctionsChannel, nib1: number, nib2: number, nib3: number): void {
         let message = nib1 << 12 | nib2 << 8 | nib3 << 4 | (0xf ^ nib1 ^ nib2 ^ nib3);
 
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 5; i++) {
             pause(channel, i)
             sendStartStopBit()
             for (let j = 0; j < 16; j++) {
-                sendBit()
+                sendMark()
                 control.waitMicros((0x8000 & (message << j)) != 0 ? HIGH_PAUSE : LOW_PAUSE);
             }
             sendStartStopBit()
         }
+        pause(channel, 5)
     }
 
     export function toggle(): void {
