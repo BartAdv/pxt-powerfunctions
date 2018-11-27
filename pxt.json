@@ -6,8 +6,12 @@
         "circuit-playground": "*"
     },
     "files": [
-        "README.md",
-        "main.ts"
+      "enums.d.ts",
+      "pf.cpp",
+      "pf.h",
+      "shims.d.ts",
+      "README.md",
+      "main.ts"
     ],
     "testFiles": [
         "test.ts"
