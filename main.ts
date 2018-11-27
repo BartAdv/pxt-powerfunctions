@@ -2,8 +2,7 @@
 // Based on https://github.com/jurriaan/Arduino-PowerFunctions
 // and on https://github.com/philipphenkel/pxt-powerfunctions
 
-// temporarily, till it's exposed for CPX
-let irLed = pins.TX
+let irLed = pins.IROut
 // TODO: figure out how to handle this better
 let _toggle = 0
 
