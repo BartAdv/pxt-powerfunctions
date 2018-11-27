@@ -62,7 +62,7 @@ enum PowerFunctionsCommand {
     Brake = 3
 }
 
-//% weight=99 color=#0fbc11 icon="\uf0e4" block="Power Functions"
+//% weight=99 color=#C1C6C8 icon="\uf0e4" block="Power Functions"
 namespace powerfunctions {
 
     const COMBO_DIRECT_MODE = 0x01
