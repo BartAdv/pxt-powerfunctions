@@ -1,5 +1,5 @@
-#ifndef PF_h
-#define PF_h
+#ifndef PF_SENDER_H
+#define PF_SENDER_H
 
 #include "pxt.h"
 
@@ -52,10 +52,12 @@
 #define RED 0x0
 #define BLUE 0x1
 
-class PowerFunctions
+namespace powerfunctions {
+
+class Sender
 {
  public:
-   PowerFunctions(uint8_t pin);
+   Sender(uint8_t pin);
     void single_pwm(uint8_t, uint8_t, uint8_t);
     void single_increment(uint8_t, uint8_t);
     void single_decrement(uint8_t, uint8_t);
@@ -74,5 +76,27 @@ class PowerFunctions
     bool    _debug;
 };
 
+
+ // TODO: move to other file
+ enum class PowerFunctionsMotor {
+   //% block="red | channel 1"
+   Red1 = 0,
+   //% block="red | channel 2"
+   Red2 = 1,
+   //% block="red | channel 3"
+   Red3 = 2,
+   //% block="red | channel 4"
+   Red4 = 3,
+   //% block="blue | channel 1"
+   Blue1 = 4,
+   //% block="blue | channel 2"
+   Blue2 = 5,
+   //% block="blue | channel 3"
+   Blue3 = 6,
+   //% block="blue | channel 4"
+   Blue4 = 7
+ };
+
+}
 #endif
 // END OF FILE

@@ -7,8 +7,11 @@
     },
     "files": [
       "enums.d.ts",
+      "sender.cpp",
+      "sender.h",
+      "receiver.cpp",
+      "receiver.h",
       "pf.cpp",
-      "pf.h",
       "shims.d.ts",
       "README.md",
       "main.ts"

@@ -1,122 +1,14 @@
-#include "pxt.h"
-#include "pf.h"
+#include "sender.h"
+#include "receiver.h"
 
-// Lego Power Functions Infrared Control for PXT
-// Based on https://github.com/jurriaan/Arduino-PowerFunctions
-// and on https://github.com/philipphenkel/pxt-powerfunctions
+namespace powerfunctions {
 
-
-// Constructor
-PowerFunctions::PowerFunctions(uint8_t pin)
-{
-  _toggle = 0;
-  _pin = lookupPin(pin);
-
-  if(_pin) {
-    //pinMode(_pin, OUTPUT);
-    _pin->setDigitalValue(0);
+class PfWrap : public Sender {
+public:
+  PfWrap() : Sender(PIN(IR_OUT)) {
   }
-
-}
-
-// Single output mode PWM
-void PowerFunctions::single_pwm(uint8_t output, uint8_t channel, uint8_t pwm) {
-  send(channel, _toggle | channel, SINGLE_OUTPUT | output, pwm);
-  toggle();
-}
-
-void PowerFunctions::single_increment(uint8_t output, uint8_t channel){
-  send(channel, _toggle | channel, SINGLE_EXT | output, 0x4);
-  toggle();
-}
-
-void PowerFunctions::single_decrement(uint8_t output, uint8_t channel){
-  send(channel, _toggle | channel, SINGLE_EXT | output, 0x5);
-  toggle();
-}
-
-// Combo PWM mode
-void PowerFunctions::combo_pwm(uint8_t blue_speed, uint8_t red_speed, uint8_t channel)
-{
-  send(channel, ESCAPE | channel, blue_speed, red_speed);
-}
-
-//
-// Private methods
-//
-
-// Pause function see "Transmitting Messages" in Power Functions PDF
-void PowerFunctions::pause(uint8_t channel, uint8_t count)
-{
-  uint8_t pause = 0;
-
-  if(count == 0) {
-    pause = 4 - (channel + 1);
-  } else if(count < 3) { // 1, 2
-    pause = 5;
-  } else {  // 3, 4, 5
-    pause = 6 + 2 * channel;
-  }
-  sleep_us(pause * 16000); //MAX_MESSAGE_LENGTH
-}
-
-// Send the start/stop bit
-void PowerFunctions::start_stop_bit()
-{
-  send_bit();
-  sleep_us(START_STOP); // Extra pause for start_stop_bit
-}
-
-// Send a bit
-void PowerFunctions::send_bit() {
-  for(uint8_t i = 0; i < 6; i++) {
-    _pin->setDigitalValue(1);
-    sleep_us(HALF_PERIOD);
-    _pin->setDigitalValue(0);
-    sleep_us(HALF_PERIOD);
-  }
-}
-
-void PowerFunctions::send(uint8_t channel, uint8_t nib1, uint8_t nib2, uint8_t nib3)
-{
-  uint8_t i, j;
-
-  uint16_t message = nib1 << 12 | nib2 << 8 | nib3 << 4 | (0xf ^ nib1 ^ nib2 ^ nib3);
-  for(i = 0; i < 5; i++)
-  {
-    pause(channel, i);
-    start_stop_bit();
-    for(j = 0; j < 16; j++) {
-      send_bit();
-      sleep_us((0x8000 & (message << j)) != 0 ? HIGH_PAUSE : LOW_PAUSE);
-    }
-    start_stop_bit();
-  }
-  pause(channel, 5);
-}
-
-inline void PowerFunctions::toggle(){
-  _toggle ^= 0x8;
-}
-
-enum class PowerFunctionsMotor {
-    //% block="red | channel 1"
-    Red1 = 0,
-    //% block="red | channel 2"
-    Red2 = 1,
-    //% block="red | channel 3"
-    Red3 = 2,
-    //% block="red | channel 4"
-    Red4 = 3,
-    //% block="blue | channel 1"
-    Blue1 = 4,
-    //% block="blue | channel 2"
-    Blue2 = 5,
-    //% block="blue | channel 3"
-    Blue3 = 6,
-    //% block="blue | channel 4"
-    Blue4 = 7
 };
+SINGLETON(PfWrap);
 
 uint8_t getOutput(PowerFunctionsMotor motor) {
   switch(motor) {
@@ -146,15 +38,6 @@ uint8_t getChannel(PowerFunctionsMotor motor) {
   case PowerFunctionsMotor::Blue4: return 3;
   }
 }
-
-namespace powerfunctions {
-
-class PfWrap : public PowerFunctions {
-public:
-  PfWrap() : PowerFunctions(PIN(IR_OUT)) {
-  }
-};
-SINGLETON(PfWrap);
 
   /**
    * Move a motor forward.
