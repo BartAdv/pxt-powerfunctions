@@ -16,6 +16,9 @@ namespace powerfunctions {
   public:
     Receiver(uint16_t id, int pin);
 
+    // TODO: fail when not received?
+    uint16_t getDecodedMessage() { return this->decodedMessage; }
+
   private:
     uint16_t id;
     DevicePin* pin;

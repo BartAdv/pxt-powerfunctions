@@ -40,6 +40,18 @@ declare namespace powerfunctions {
     //% weight=70
     //% motor.fieldEditor="gridpicker" motor.fieldOptions.columns=4 motor.fieldOptions.tooltips="false" shim=powerfunctions::leeway
     function leeway(motor: PowerFunctionsMotor): void;
+
+    /**
+     * Run action after a PF message is recieved.
+     */
+    //% block shim=powerfunctions::onPFMessage
+    function onPFMessage(body: () => void): void;
+
+    /**
+     * Get most recent message.
+     */
+    //% block shim=powerfunctions::pfMessage
+    function pfMessage(): uint16;
 }
 
 // Auto-generated. Do not edit. Really.

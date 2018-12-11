@@ -1,14 +1,16 @@
 #include "sender.h"
 #include "receiver.h"
 
+#define PF_RECEIVER_COMPONENT_ID 0x666
+
 namespace powerfunctions {
 
-class PfWrap : public Sender {
+class TheSender : public Sender {
 public:
-  PfWrap() : Sender(PIN(IR_OUT)) {
+  TheSender() : Sender(PIN(IR_OUT)) {
   }
 };
-SINGLETON(PfWrap);
+SINGLETON(TheSender);
 
 uint8_t getOutput(PowerFunctionsMotor motor) {
   switch(motor) {
@@ -49,7 +51,7 @@ uint8_t getChannel(PowerFunctionsMotor motor) {
   //% speed.min=1 speed.max=7
   void moveForward(PowerFunctionsMotor motor, uint8_t speed) {
     // TODO: clamp speed ?
-    auto pf = getPfWrap();
+    auto pf = getTheSender();
     pf->single_pwm(getOutput(motor), getChannel(motor), speed);
   }
 
@@ -63,7 +65,7 @@ uint8_t getChannel(PowerFunctionsMotor motor) {
   //% speed.min=1 speed.max=7
   void moveBackward(PowerFunctionsMotor motor, uint8_t speed) {
     // TODO: clamp speed ?
-    auto pf = getPfWrap();
+    auto pf = getTheSender();
     pf->single_pwm(getOutput(motor), getChannel(motor), 0xf + 1 - speed);
   }
 
@@ -76,7 +78,7 @@ uint8_t getChannel(PowerFunctionsMotor motor) {
   //% weight=80
   //% motor.fieldEditor="gridpicker" motor.fieldOptions.columns=4 motor.fieldOptions.tooltips="false"
   void brake(PowerFunctionsMotor motor) {
-    auto pf = getPfWrap();
+    auto pf = getTheSender();
     pf->single_pwm(getOutput(motor), getChannel(motor), PWM_BRK);
   }
 
@@ -89,7 +91,36 @@ uint8_t getChannel(PowerFunctionsMotor motor) {
   //% weight=70
   //% motor.fieldEditor="gridpicker" motor.fieldOptions.columns=4 motor.fieldOptions.tooltips="false"
   void leeway(PowerFunctionsMotor motor) {
-    auto pf = getPfWrap();
+    auto pf = getTheSender();
     pf->single_pwm(getOutput(motor), getChannel(motor), PWM_FLT);
+  }
+
+  //////////////////
+  // Receiving
+  /////////////////
+
+  class TheReceiver : public Receiver {
+  public:
+    TheReceiver() : Receiver(PF_RECEIVER_COMPONENT_ID, PIN(IR_IN)) {
+    }
+  };
+  SINGLETON(TheReceiver);
+
+  /**
+   * Run action after a PF message is recieved.
+   */
+  //% block
+  void onPFMessage(Action body) {
+    getTheReceiver();
+    registerWithDal(PF_RECEIVER_COMPONENT_ID, MESSAGE_EVENT, body);
+  }
+
+  /**
+   * Get most recent message.
+   */
+  //% block
+  uint16_t pfMessage() {
+    auto w = getTheReceiver();
+    return w->getDecodedMessage();
   }
 }
