@@ -6,6 +6,7 @@ namespace powerfunctions
 
   Receiver::Receiver(uint16_t id, int pin)
   {
+    DMESG("Create receiver for pin: %d", pin);
     this->id = id;
     this->pin = lookupPin(pin);
 
@@ -31,6 +32,7 @@ namespace powerfunctions
   void Receiver::pulseGap(Event ev)
   {
     int t = (int)ev.timestamp;
+    DMESG("pulseGap: %d", t);
 
     if (this->receiveState == ReadData) {
       // time calculations performed without taking mark time into account
