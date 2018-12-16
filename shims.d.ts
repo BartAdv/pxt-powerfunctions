@@ -52,6 +52,12 @@ declare namespace powerfunctions {
      */
     //% parts="pf" shim=powerfunctions::pfMessage
     function pfMessage(): uint16;
+
+    /**
+     * for debugging
+     */
+    //% parts="pf" shim=powerfunctions::writeDmesg
+    function writeDmesg(): void;
 }
 
 // Auto-generated. Do not edit. Really.

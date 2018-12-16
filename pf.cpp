@@ -124,4 +124,12 @@ uint8_t getChannel(PowerFunctionsMotor motor) {
     auto w = getTheReceiver();
     return w->getDecodedMessage();
   }
+
+  /**
+   * for debugging
+   */
+  //% parts="pf"
+  void writeDmesg() {
+    pxt::dumpDmesg();
+  }
 }
