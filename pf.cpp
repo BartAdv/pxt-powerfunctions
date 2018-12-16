@@ -109,16 +109,17 @@ uint8_t getChannel(PowerFunctionsMotor motor) {
   /**
    * Run action after a PF message is recieved.
    */
-  //% block
-  void onPFMessage(Action body) {
+  //% parts="pf"
+  void onPFMessageRaw(Action body) {
     getTheReceiver();
     registerWithDal(PF_RECEIVER_COMPONENT_ID, MESSAGE_EVENT, body);
   }
 
+
   /**
    * Get most recent message.
    */
-  //% block
+  //% parts="pf"
   uint16_t pfMessage() {
     auto w = getTheReceiver();
     return w->getDecodedMessage();

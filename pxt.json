@@ -12,6 +12,7 @@
       "receiver.cpp",
       "receiver.h",
       "pf.cpp",
+      "pf.ts",
       "shims.d.ts",
       "README.md",
       "main.ts"

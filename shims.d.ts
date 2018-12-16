@@ -44,13 +44,13 @@ declare namespace powerfunctions {
     /**
      * Run action after a PF message is recieved.
      */
-    //% block shim=powerfunctions::onPFMessage
-    function onPFMessage(body: () => void): void;
+    //% parts="pf" shim=powerfunctions::onPFMessageRaw
+    function onPFMessageRaw(body: () => void): void;
 
     /**
      * Get most recent message.
      */
-    //% block shim=powerfunctions::pfMessage
+    //% parts="pf" shim=powerfunctions::pfMessage
     function pfMessage(): uint16;
 }
 
